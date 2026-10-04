@@ -37,3 +37,19 @@ if scan_input("reader_agent", note):
  log("CLEAN: note passed to reader_agent")
 else:
  log("QUARANTINED: note was not passed to reader_agent")
+
+TOKENS = {"token-reader-123": "reader_agent", "token-admin-456": "admin_agent"}
+
+def authenticate(token):
+    return TOKENS.get(token)
+
+def secure_run(token, tool_name):
+    agent = authenticate(token)
+    if agent is None:
+        log("DENIED: invalid token, request rejected")
+        return
+    run_tool(agent, tool_name)
+
+secure_run("token-reader-123", "read_note")
+secure_run("token-admin-456", "delete_files")
+secure_run("fake-token", "delete_files")
