@@ -1,5 +1,11 @@
 # AI Agent Security Lab
 
+A hands-on cybersecurity project exploring how AI agents can securely use tools, access data, and enforce permissions.
+
+## Overview
+
+This object is a controlled environment for learning and demonstrating AI agent security concepts. The agent can interact with simulated resources while enforcing access controls based on tokens and permissions. 
+
 A small Python project that explores how to secure AI agents, built step by step as a learning portfolio.
 
 ## What it demonstrates
