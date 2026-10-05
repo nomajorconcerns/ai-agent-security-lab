@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from scanner import find_injection
 
@@ -5,8 +6,6 @@ PERMISSIONS = {
     "reader_agent": ["read_note"],
     "admin_agent": ["read_note", "write_note", "delete_files"],
 }
-
-TOKENS = {"token-reader-123": "reader_agent", "token-admin-456": "admin_agent"}
 
 def log(message):
     line = datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " " + message
@@ -28,8 +27,18 @@ def scan_input(agent_name, text):
         return False
     return True
 
+def load_tokens():
+    tokens = {}
+    reader = os.environ.get("READER_TOKEN")
+    admin = os.environ.get("ADMIN_TOKEN")
+    if reader:
+        tokens[reader] = "reader_agent"
+    if admin:
+        tokens[admin] = "admin_agent"
+    return tokens
+
 def authenticate(token):
-    return TOKENS.get(token)
+    return load_tokens().get(token)
 
 def secure_run(token, tool_name):
     agent = authenticate(token)
@@ -47,6 +56,6 @@ if __name__ == "__main__":
         log("CLEAN: note passed to reader_agent")
     else:
         log("QUARANTINED: note was not passed to reader_agent")
-    secure_run("token-reader-123", "read_note")
-    secure_run("token-admin-456", "delete_files")
+    secure_run(os.environ.get("READER_TOKEN"), "read_note")
+    secure_run(os.environ.get("ADMIN_TOKEN"), "delete_files")
     secure_run("fake-token", "delete_files")
